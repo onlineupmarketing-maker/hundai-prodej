@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klíčová slova — Auto Vinkler</title>
+<style>
+  :root {
+    --blue: #002c5f;
+    --sky: #00aad2;
+    --light: #f5f7fb;
+    --border: #e2e8f0;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 14px; color: var(--text); background: #f0f4f8; padding: 32px 24px; }
+
+  .page-header {
+    background: var(--blue);
+    color: #fff;
+    padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+  .page-header h1 { font-size: 20px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
+  .page-header p { font-size: 13px; color: rgba(255,255,255,.65); }
+
+  .summary-row {
+    display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .summary-card {
+    background: #fff;
+    border-top: 3px solid var(--sky);
+    padding: 16px 24px;
+    flex: 1; min-width: 160px;
+  }
+  .summary-card .num { font-size: 28px; font-weight: 700; color: var(--blue); }
+  .summary-card .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+
+  .controls {
+    background: #fff;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .controls label { font-size: 12px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .05em; }
+  .controls select, .controls input {
+    border: 1.5px solid var(--border);
+    padding: 6px 10px;
+    font-size: 13px;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+  }
+  .controls select:focus, .controls input:focus { border-color: var(--sky); }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; }
+  thead th {
+    background: var(--blue); color: #fff;
+    padding: 10px 14px;
+    text-align: left; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em;
+    white-space: nowrap; cursor: pointer;
+    user-select: none;
+  }
+  thead th:hover { background: #003882; }
+  thead th.sorted-asc::after { content: ' ↑'; }
+  thead th.sorted-desc::after { content: ' ↓'; }
+
+  tbody tr:nth-child(even) { background: var(--light); }
+  tbody tr:hover { background: #e8f4f8; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+  .kw { font-weight: 600; color: var(--blue); }
+  .vol { font-weight: 700; font-size: 15px; }
+  .vol.high { color: #155724; }
+  .vol.mid  { color: #856404; }
+  .vol.low  { color: #004282; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar {
+    height: 8px; border-radius: 2px;
+    background: var(--sky); min-width: 2px;
+    transition: width .3s;
+  }
+
+  .comp { display: inline-block; padding: 3px 9px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .comp.nizka   { background: #d4edda; color: #155724; }
+  .comp.stredni { background: #fff3cd; color: #856404; }
+  .comp.vysoka  { background: #f8d7da; color: #721c24; }
+  .comp.empty   { background: #f0f0f0; color: #999; }
+
+  .yoy { font-size: 12px; font-weight: 700; }
+  .yoy.pos { color: #155724; }
+  .yoy.neg { color: #721c24; }
+  .yoy.neu { color: var(--muted); }
+
+  .cpc { font-size: 13px; color: var(--muted); }
+
+  .cat { font-size: 11px; color: var(--muted); }
+
+  .note {
+    margin-top: 20px;
+    background: #fff;
+    border-left: 3px solid var(--sky);
+    padding: 14px 20px;
+    font-size: 12px; color: var(--muted); line-height: 1.7;
+  }
+  .note strong { color: var(--blue); }
+
+  @media (max-width: 768px) {
+    .summary-card { min-width: 120px; }
+    table { font-size: 12px; }
+    td, th { padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Ukázka klíčových slov pro vyhledávání v Google Ads<br>pro jihočeský kraj – měsíční objem vyhledávání</h1>
+  <p>Zdroj: Google Keyword Planner · Období: březen 2025 – únor 2026 · Lokalita: Jihočeský kraj</p>
+</div>
+
+<div class="summary-row">
+  <div class="summary-card">
+    <div class="num" id="total-count">78</div>
+    <div class="lbl">Klíčových slov</div>
+  </div>
+  <div class="summary-card">
+    <div class="num" id="total-vol">7 870</div>
+    <div class="lbl">Celkový měs. objem</div>
+  </div>
+  <div class="summary-card">
+    <div class="num">3</div>
+    <div class="lbl">Slova nad 500 hledání</div>
+  </div>
+  <div class="summary-card">
+    <div class="num">hyundai i30</div>
+    <div class="lbl">Nejvyhledávanější</div>
+  </div>
+</div>
+
+<div class="controls">
+  <label>Kategorie:</label>
+  <select id="filter-cat" onchange="applyFilters()">
+    <option value="">Všechny</option>
+    <option value="Hyundai">Hyundai</option>
+    <option value="Ford">Ford</option>
+    <option value="Všeobecná">Všeobecná</option>
+  </select>
+  <label>Konkurence:</label>
+  <select id="filter-comp" onchange="applyFilters()">
+    <option value="">Všechny</option>
+    <option value="Nízká">Nízká</option>
+    <option value="Střední">Střední</option>
+    <option value="Vysoká">Vysoká</option>
+  </select>
+  <label>Min. objem:</label>
+  <select id="filter-vol" onchange="applyFilters()">
+    <option value="0">Vše</option>
+    <option value="20">20+</option>
+    <option value="50">50+</option>
+    <option value="100">100+</option>
+    <option value="200">200+</option>
+  </select>
+  <label style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:400;">Kliknutím na záhlaví sloupce seřadíš</label>
+</div>
+
+<table id="kw-table">
+  <thead>
+    <tr>
+      <th onclick="sortTable('keyword')">#&nbsp; Klíčové slovo</th>
+      <th onclick="sortTable('cat')">Kategorie</th>
+      <th onclick="sortTable('volume')">Měs. objem</th>
+      <th onclick="sortTable('volume')">Vizualizace</th>
+      <th onclick="sortTable('competition')">Konkurence</th>
+      <th onclick="sortTable('cpc_low')">CPC od (Kč)</th>
+      <th onclick="sortTable('cpc_high')">CPC do (Kč)</th>
+      <th onclick="sortTable('yoy')">Trend YoY</th>
+    </tr>
+  </thead>
+  <tbody id="kw-body"></tbody>
+</table>
+
+<div class="note">
+  <strong>Poznámka k datům:</strong> Objem vyhledávání je měřen pro lokalitu <strong>Jihočeský kraj</strong> (nikoliv celá ČR). Hodnoty jsou průměr za posledních 12 měsíců (březen 2025 – únor 2026). CPC je odhadovaná cena za proklik v Google Ads při cílení na tuto lokalitu. Konkurence označuje hustotu inzerentů v dané kategorii. <strong>Nízká konkurence + slušný objem = nejlepší příležitost pro Google Ads.</strong>
+</div>
+
+<script>
+const MAX_VOL = 1000;
+
+const data = [
+  {keyword:"hyundai i30",cat:"Hyundai",volume:1000,competition:"Střední",cpc_low:2.69,cpc_high:9.89,yoy:"14%"},
+  {keyword:"hyundai tucson",cat:"Hyundai",volume:880,competition:"Střední",cpc_low:3.03,cpc_high:10.35,yoy:"0%"},
+  {keyword:"ford focus",cat:"Ford",volume:480,competition:"Nízká",cpc_low:3.37,cpc_high:8.58,yoy:"0%"},
+  {keyword:"ford kuga",cat:"Ford",volume:480,competition:"Střední",cpc_low:4.28,cpc_high:18.27,yoy:"-33%"},
+  {keyword:"ford ranger",cat:"Ford",volume:390,competition:"Střední",cpc_low:3.21,cpc_high:21.72,yoy:"22%"},
+  {keyword:"hyundai i20",cat:"Hyundai",volume:390,competition:"Nízká",cpc_low:2.26,cpc_high:9.85,yoy:"22%"},
+  {keyword:"ford transit",cat:"Ford",volume:320,competition:"Nízká",cpc_low:4.15,cpc_high:19.80,yoy:"-19%"},
+  {keyword:"ford puma",cat:"Ford",volume:260,competition:"Nízká",cpc_low:4.20,cpc_high:11.83,yoy:"23%"},
+  {keyword:"hyundai kona",cat:"Hyundai",volume:260,competition:"Nízká",cpc_low:2.48,cpc_high:9.86,yoy:"-19%"},
+  {keyword:"ford explorer",cat:"Ford",volume:210,competition:"Nízká",cpc_low:3.40,cpc_high:16.91,yoy:"-19%"},
+  {keyword:"autosalon",cat:"Všeobecná",volume:170,competition:"Nízká",cpc_low:4.96,cpc_high:13.63,yoy:"0%"},
+  {keyword:"ford transit custom",cat:"Ford",volume:170,competition:"Střední",cpc_low:4.15,cpc_high:18.22,yoy:"-19%"},
+  {keyword:"prodej aut",cat:"Všeobecná",volume:170,competition:"Vysoká",cpc_low:5.54,cpc_high:20.38,yoy:"24%"},
+  {keyword:"auto na splátky",cat:"Všeobecná",volume:110,competition:"Vysoká",cpc_low:18.98,cpc_high:81.98,yoy:"0%"},
+  {keyword:"koupit auto",cat:"Všeobecná",volume:110,competition:"Střední",cpc_low:5.16,cpc_high:16.38,yoy:"27%"},
+  {keyword:"auto na operativní leasing",cat:"Všeobecná",volume:90,competition:"Vysoká",cpc_low:9.01,cpc_high:25.26,yoy:"22%"},
+  {keyword:"hyundai ioniq 5",cat:"Hyundai",volume:70,competition:"Nízká",cpc_low:2.77,cpc_high:10.36,yoy:"-44%"},
+  {keyword:"hybrid auto",cat:"Všeobecná",volume:50,competition:"Střední",cpc_low:3.26,cpc_high:13.77,yoy:"25%"},
+  {keyword:"rodinné auto",cat:"Všeobecná",volume:50,competition:"Střední",cpc_low:3.24,cpc_high:10.51,yoy:"-40%"},
+  {keyword:"hyundai ioniq 6",cat:"Hyundai",volume:40,competition:"Nízká",cpc_low:4.02,cpc_high:9.86,yoy:"0%"},
+  {keyword:"ford mustang mach-e",cat:"Ford",volume:30,competition:"Nízká",cpc_low:1.76,cpc_high:11.22,yoy:"0%"},
+  {keyword:"úvěr na auto",cat:"Všeobecná",volume:30,competition:"Vysoká",cpc_low:23.47,cpc_high:80.33,yoy:"33%"},
+  {keyword:"auto leasing",cat:"Všeobecná",volume:20,competition:"Vysoká",cpc_low:8.08,cpc_high:26.18,yoy:"-33%"},
+  {keyword:"ford kuga hybrid",cat:"Ford",volume:20,competition:"Střední",cpc_low:3.52,cpc_high:14.15,yoy:"100%"},
+  {keyword:"ford operativní leasing",cat:"Ford",volume:20,competition:"Vysoká",cpc_low:8.54,cpc_high:34.59,yoy:"100%"},
+  {keyword:"hyundai operativní leasing",cat:"Hyundai",volume:20,competition:"Vysoká",cpc_low:8.69,cpc_high:26.93,yoy:"0%"},
+  {keyword:"hyundai tucson hybrid",cat:"Hyundai",volume:20,competition:"Střední",cpc_low:3.36,cpc_high:11.64,yoy:"50%"},
+  {keyword:"nové auto",cat:"Všeobecná",volume:20,competition:"Vysoká",cpc_low:6.08,cpc_high:17.97,yoy:"-50%"},
+  {keyword:"auto na úvěr",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:12.72,cpc_high:51.12,yoy:"0%"},
+  {keyword:"auto protiúčet",cat:"Všeobecná",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"auto skladem",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"elektro auto prodej",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"financování auta",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:18.46,cpc_high:70.38,yoy:"100%"},
+  {keyword:"finanční leasing auto",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:10.01,cpc_high:21.61,yoy:"0%"},
+  {keyword:"firemní auto",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"fleet auto",cat:"Všeobecná",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"ford akční nabídka",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford dealer",cat:"Ford",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford explorer plug-in hybrid",cat:"Ford",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford financování",cat:"Ford",volume:10,competition:"Vysoká",cpc_low:8.33,cpc_high:46.57,yoy:"0%"},
+  {keyword:"ford fleet",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford focus kombi cena",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"ford kuga cena 2025",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford kuga skladem",cat:"Ford",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"ford mustang mach-e cena",cat:"Ford",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"ford puma cena",cat:"Ford",volume:10,competition:"Střední",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford ranger cena 2025",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"ford testovací jízda",cat:"Ford",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai akční nabídka",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"hyundai dealer",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"hyundai financování",cat:"Hyundai",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai i20 cena",cat:"Hyundai",volume:10,competition:"Střední",cpc_low:1.46,cpc_high:7.97,yoy:"100%"},
+  {keyword:"hyundai i30 kombi cena",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai i30 skladem",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai ioniq 5 cena",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"hyundai ioniq 5 vs skoda enyaq",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"hyundai ioniq 6 cena",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai kona elektro",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:1.22,cpc_high:17.09,yoy:"0%"},
+  {keyword:"hyundai testovací jízda",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"hyundai tucson cena 2025",cat:"Hyundai",volume:10,competition:"Střední",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"hyundai tucson skladem",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai tucson test",cat:"Hyundai",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"hyundai tucson vs ford kuga",cat:"Hyundai",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"koupě auta",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:9.90,cpc_high:27.39,yoy:"0%"},
+  {keyword:"koupě nového auta",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"nejlepší hybrid 2025",cat:"Všeobecná",volume:10,competition:"Střední",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"nejlepší rodinné auto 2025",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"nejlepší suv 2025",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"nové auto akce",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"nové suv",cat:"Všeobecná",volume:10,competition:"Střední",cpc_low:4.41,cpc_high:13.90,yoy:"0%"},
+  {keyword:"osobní auto prodej",cat:"Všeobecná",volume:10,competition:"—",cpc_low:null,cpc_high:null,yoy:"-100%"},
+  {keyword:"plug-in hybrid auto",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:4.44,cpc_high:10.35,yoy:"200%"},
+  {keyword:"prodej nových aut",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:5.90,cpc_high:18.85,yoy:"0%"},
+  {keyword:"rodinné suv",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"0%"},
+  {keyword:"suv prodej",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:null,cpc_high:null,yoy:"∞"},
+  {keyword:"test drive",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"100%"},
+  {keyword:"výkup auta",cat:"Všeobecná",volume:10,competition:"Vysoká",cpc_low:35.16,cpc_high:156.41,yoy:"-50%"},
+  {keyword:"zapůjčení auta",cat:"Všeobecná",volume:10,competition:"Nízká",cpc_low:null,cpc_high:null,yoy:"∞"},
+];
+
+let sortKey = 'volume';
+let sortDir = -1;
+let filtered = [...data];
+
+function volClass(v) {
+  if (v >= 500) return 'high';
+  if (v >= 100) return 'mid';
+  return 'low';
+}
+function compClass(c) {
+  if (c === 'Nízká') return 'nizka';
+  if (c === 'Střední') return 'stredni';
+  if (c === 'Vysoká') return 'vysoka';
+  return 'empty';
+}
+function yoyClass(y) {
+  if (!y || y === '0%' || y === '—') return 'neu';
+  if (y.startsWith('-')) return 'neg';
+  return 'pos';
+}
+function yoyIcon(y) {
+  if (!y || y === '0%' || y === '—') return '→';
+  if (y === '∞') return '↑ nové';
+  if (y.startsWith('-')) return '↓';
+  return '↑';
+}
+
+function render() {
+  const tbody = document.getElementById('kw-body');
+  let html = '';
+  let totalVol = 0;
+  filtered.forEach((row, i) => {
+    totalVol += row.volume;
+    const barW = Math.round((row.volume / MAX_VOL) * 180);
+    const cpcLow = row.cpc_low ? row.cpc_low.toFixed(2).replace('.',',') + ' Kč' : '—';
+    const cpcHigh = row.cpc_high ? row.cpc_high.toFixed(2).replace('.',',') + ' Kč' : '—';
+    html += `<tr>
+      <td class="kw">${i+1}. ${row.keyword}</td>
+      <td class="cat">${row.cat}</td>
+      <td class="vol ${volClass(row.volume)}">${row.volume.toLocaleString('cs')}</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:${barW}px"></div></div></td>
+      <td><span class="comp ${compClass(row.competition)}">${row.competition || '—'}</span></td>
+      <td class="cpc">${cpcLow}</td>
+      <td class="cpc">${cpcHigh}</td>
+      <td class="yoy ${yoyClass(row.yoy)}">${yoyIcon(row.yoy)} ${row.yoy || '—'}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+  document.getElementById('total-count').textContent = filtered.length;
+  document.getElementById('total-vol').textContent = totalVol.toLocaleString('cs');
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortDir *= -1;
+  else { sortKey = key; sortDir = -1; }
+  filtered.sort((a,b) => {
+    let va = a[key], vb = b[key];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va === null || va === undefined) return 1;
+    if (vb === null || vb === undefined) return -1;
+    return va < vb ? sortDir : va > vb ? -sortDir : 0;
+  });
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted-asc','sorted-desc'));
+  render();
+}
+
+function applyFilters() {
+  const cat = document.getElementById('filter-cat').value;
+  const comp = document.getElementById('filter-comp').value;
+  const minVol = parseInt(document.getElementById('filter-vol').value) || 0;
+  filtered = data.filter(r => {
+    if (cat && r.cat !== cat) return false;
+    if (comp && r.competition !== comp) return false;
+    if (r.volume < minVol) return false;
+    return true;
+  });
+  filtered.sort((a,b) => b.volume - a.volume);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
